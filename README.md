@@ -2,6 +2,8 @@
 
 A Node.js/Express backend powering **CityCare Hospital's** AI voice receptionist, built on [Vapi](https://vapi.ai). Callers can book, cancel, and reschedule appointments, get routed for emergencies, and be recognized as returning patients — all through natural phone conversation, backed by a real Postgres database.
 
+This project was built as a ground-up rebuild of an earlier n8n-based version, moving the entire backend logic into plain, testable JavaScript.
+
 ---
 
 ## What it does

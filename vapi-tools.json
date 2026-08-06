@@ -1,0 +1,170 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "logIntent",
+      "description": "Logs what the caller wants and how urgent it is. Call this as soon as you understand the caller's intent, even if you're also going to call another tool afterward like booking an appointment.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "description": "A short label for what the caller wants, like book_appointment or general_inquiry."
+          },
+          "summary": {
+            "type": "string",
+            "description": "A one-sentence summary of what the caller said."
+          },
+          "urgency": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "emergency"],
+            "description": "How urgent this is."
+          }
+        },
+        "required": ["intent", "urgency"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/log-intent" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "emergencyEscalation",
+      "description": "Use when the caller describes a medical emergency. Ask the caller to confirm before transferring, then call this with their answer.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "intent": {
+            "type": "string",
+            "description": "A short label for the emergency, like chest_pain or severe_bleeding."
+          },
+          "summary": {
+            "type": "string",
+            "description": "A one-sentence summary of what the caller reported."
+          },
+          "confirmed": {
+            "type": "boolean",
+            "description": "Whether the caller confirmed they want to be transferred."
+          }
+        },
+        "required": ["intent", "confirmed"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/emergency-escalation" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "bookAppointment",
+      "description": "Books an appointment for the caller with a doctor of the given specialty, on a given date and time. Only call this once you have the caller's name, phone number, desired specialty, date, and time.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "patientName": {
+            "type": "string",
+            "description": "The caller's full name."
+          },
+          "patientPhone": {
+            "type": "string",
+            "description": "The caller's phone number."
+          },
+          "specialty": {
+            "type": "string",
+            "enum": ["General Physician", "Cardiologist", "Orthopedic"],
+            "description": "Which type of doctor the caller wants to see."
+          },
+          "appointmentDate": {
+            "type": "string",
+            "description": "The desired appointment date, in YYYY-MM-DD format."
+          },
+          "appointmentTime": {
+            "type": "string",
+            "description": "The desired appointment time, in 24-hour HH:MM format."
+          }
+        },
+        "required": ["patientName", "patientPhone", "specialty", "appointmentDate", "appointmentTime"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/book-appointment" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "cancelAppointment",
+      "description": "Cancels an existing appointment using the caller's 4-digit confirmation code. Ask the caller for their confirmation code before calling this.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "confirmationCode": {
+            "type": "string",
+            "description": "The caller's 4-digit appointment confirmation code."
+          }
+        },
+        "required": ["confirmationCode"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/cancel-appointment" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "rescheduleAppointment",
+      "description": "Moves an existing appointment to a new date and time using the caller's 4-digit confirmation code. Ask for their existing confirmation code plus the new date and time they want.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "confirmationCode": {
+            "type": "string",
+            "description": "The caller's existing 4-digit confirmation code for the appointment being moved."
+          },
+          "newAppointmentDate": {
+            "type": "string",
+            "description": "The new desired appointment date, in YYYY-MM-DD format."
+          },
+          "newAppointmentTime": {
+            "type": "string",
+            "description": "The new desired appointment time, in 24-hour HH:MM format."
+          }
+        },
+        "required": ["confirmationCode", "newAppointmentDate", "newAppointmentTime"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/reschedule-appointment" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "lookupPatient",
+      "description": "Checks if the caller has booked with us before, using their phone number, so you can greet a returning caller by name. Call this as soon as you have their phone number.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "patientPhone": {
+            "type": "string",
+            "description": "The caller's phone number."
+          }
+        },
+        "required": ["patientPhone"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/lookup-patient" }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "appointmentDetails",
+      "description": "Looks up an appointment's doctor type and date using the confirmation code, without cancelling or changing it. Call this right after getting the confirmation code, before asking whether to cancel or reschedule.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "confirmationCode": {
+            "type": "string",
+            "description": "The caller's 4-digit appointment confirmation code."
+          }
+        },
+        "required": ["confirmationCode"]
+      }
+    },
+    "server": { "url": "https://YOUR-NGROK-URL.ngrok-free.dev/appointment-details" }
+  }
+]
